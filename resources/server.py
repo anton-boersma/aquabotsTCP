@@ -1,3 +1,5 @@
+# This file is used as a base for the TCP server, Wessel provided this file
+
 from socket import socket as Socket
 from socket import AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
 HOST = ""

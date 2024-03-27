@@ -1,3 +1,5 @@
+# This file is used as a base for the TCP client, Wessel provided this file
+
 from socket import socket as Socket
 from socket import AF_INET, SOCK_STREAM
 HOST = "localhost" # localhost zometeen

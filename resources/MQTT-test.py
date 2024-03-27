@@ -1,3 +1,5 @@
+# This file is used as a base for the MQTT connection, Jan provided this file
+
 import paho.mqtt.client as mqtt  # make sure to use version 1.6.1
 # import csv
 from time import time, strftime
