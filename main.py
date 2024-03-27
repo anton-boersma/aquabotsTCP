@@ -24,6 +24,7 @@ csv_filename = f"mqtt_data_{timestamp}.csv"
 # TCP variables
 HOST = ""  # intentionally left blank, functions as a filter
 PORT = 2345  # port used to communicate over
+# check message length in Simulink!
 message_length = 128  # length of message in ASCII characters
 
 
@@ -86,7 +87,7 @@ def tcp_thread():
             with connection:
                 print(f"Connected to {address}")
                 while True:
-                    data = connection.recv(message_length)
+                    data = connection.recv(message_length)  # check message length in Simulink!
                     if not data:
                         print("Disconnected")
                         break
