@@ -29,4 +29,3 @@ if __name__ == "__main__":
                     print(f"Received: {content}")
                     connection.sendall(data)
                     print("Responded")
-
