@@ -50,7 +50,7 @@ def on_message(client, userdata, message):
     #     print(f"Logged: {timestamp}, {topic}, {payload}")
 
 
-if __name__ == '__main__':
+def main():
     client = mqtt.Client(client_id=mqtt_client_id)
     client.on_connect = on_connect
     client.on_message = on_message
@@ -73,3 +73,6 @@ if __name__ == '__main__':
         client.disconnect()
         exit()
 
+
+if __name__ == '__main__':
+    main()
