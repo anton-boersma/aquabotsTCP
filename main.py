@@ -4,6 +4,7 @@ from time import time, strftime
 from socket import socket as Socket
 from socket import AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
 import threading
+import queue
 
 # MQTT settings
 mqtt_broker = "aquabots.tech"  # MQTT broker address
@@ -27,10 +28,25 @@ PORT = 2345  # port used to communicate over
 # check message length in Simulink!
 message_length = 128  # length of message in ASCII characters
 
+# message queues
+to_simulink_queue = queue.Queue()
+from_simulink_queue = queue.Queue()
+
 
 # MQTT methods
-def transfer_message(topic, message):
-    print(f"The value of {topic} is {message}")
+def transfer_message(topic: str, message: str):
+    # print(f"The tpye of {topic} is {type(topic)}, and the type of {message} is {type(message)}")
+    # print(f"The value of {topic} is {message}")
+    queue_message = str(topic) + ":" + str(message)
+    print(queue_message)
+    # print(len(queue_message))
+    # print(128-len(queue_message))
+    if len(queue_message) < 128:
+        queue_message = queue_message + '\0' * (128 - len(queue_message))
+    print(queue_message)
+    print(len(queue_message))
+
+    to_simulink_queue.put(queue_message)
 
 
 def on_connect(client, userdata, flags, rc):
@@ -75,6 +91,7 @@ def mqtt_thread():
         exit()
 
 
+# TCP methods
 def tcp_thread():
     # Setup TCP server
     with Socket(AF_INET, SOCK_STREAM) as server_socket:
@@ -98,6 +115,7 @@ def tcp_thread():
                     print(f"Received: {content}")
                     connection.sendall(data)
                     print("Responded")
+
 
 
 if __name__ == '__main__':

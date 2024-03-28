@@ -2,7 +2,7 @@
 
 Dit project bevat python code om MQTT berichten te kunnen gebruiken in simulink.
 
-Versies:
+Used versions:
 - python 3.10
 - paho-mqtt 1.6.1
 
