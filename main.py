@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 import csv
 from time import time, strftime
 from socket import socket as Socket
-from socket import AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
+from socket import AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR, SO_KEEPALIVE
 import threading
 import queue
 
@@ -41,10 +41,11 @@ def transfer_message(topic: str, message: str):
     print(queue_message)
     # print(len(queue_message))
     # print(128-len(queue_message))
-    if len(queue_message) < 128:
-        queue_message = queue_message + '\0' * (128 - len(queue_message))
-    print(queue_message)
-    print(len(queue_message))
+
+    # if len(queue_message) < 128:
+    #     queue_message = queue_message + "\0" * (128 - len(queue_message))
+    # print(queue_message)
+    # print(len(queue_message))
 
     to_simulink_queue.put(queue_message)
 
@@ -101,21 +102,27 @@ def tcp_thread():
         print(f"Listening on port {PORT}")
         while True:
             connection, address = server_socket.accept()
+            # connection.setsockopt(SOL_SOCKET, SO_KEEPALIVE, 1)
             with connection:
                 print(f"Connected to {address}")
                 while True:
-                    data = connection.recv(message_length)  # check message length in Simulink!
-                    if not data:
-                        print("Disconnected")
-                        break
-                    content = data.decode("utf-8")
+                    while not to_simulink_queue.empty():
+                        data = to_simulink_queue.get()  # check message length in Simulink!
+                        if not data:
+                            print("Disconnected")
+                            break
+                        print(f"Received from to simulink queue: {data}")
+                        content = data.encode("utf-8")
+                        print(f"Encoded data to {content}")
+                        connection.sendall(content)
+                        print("Responded")
+                    # content = data.encode("utf-8")
                     # parts = content.split(":")
                     # topic = parts[0]
                     # value = parts[1]
-                    print(f"Received: {content}")
-                    connection.sendall(data)
-                    print("Responded")
-
+                    # print(f"Received from to simulink queue: {content}")
+                    # connection.sendall(data)
+                    # print("Responded")
 
 
 if __name__ == '__main__':
