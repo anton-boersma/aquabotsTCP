@@ -15,7 +15,8 @@ mqtt_port = 1883  # port used for MQTT broker
 mqtt_keepalive = 60  # duration in [s] before connection is closed
 
 topics = [
-    "aquastorm/eindmaas/modules/Rudder/0/outputs/button"  # button on rudder module
+    "aquastorm/eindmaas/modules/NMEA/#"
+    # "aquastorm/eindmaas/modules/Rudder/0/outputs/button"  # button on rudder module
 ]  # add topics in this list
 
 # logging to CSV file
@@ -42,10 +43,10 @@ def transfer_message(topic: str, message: str):
     # print(len(queue_message))
     # print(128-len(queue_message))
 
-    # if len(queue_message) < 128:
-    #     queue_message = queue_message + "\0" * (128 - len(queue_message))
-    # print(queue_message)
-    # print(len(queue_message))
+    if len(queue_message) < 128:
+        queue_message = queue_message + "\0" * (128 - len(queue_message))
+    print(queue_message)
+    print(len(queue_message))
 
     to_simulink_queue.put(queue_message)
 
